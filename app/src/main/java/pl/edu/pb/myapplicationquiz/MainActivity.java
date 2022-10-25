@@ -1,5 +1,6 @@
 package pl.edu.pb.myapplicationquiz;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
             new Question(R.string.q_resources, true),
             new Question(R.string.q_version, false)
     };
+    private static final int Request_Code_Prompt = 0;
+    private boolean answer_was_shown = false;
     private int currentIndex = 0;
     private Button trueButton;
     private Button falseButton;
@@ -32,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private void CheckIfAnswerIsCorrect(boolean userAnswer){
         boolean correctAnswer = questions[currentIndex].GetAnswer();
         int resultMessageId = 0;
-        if(userAnswer == correctAnswer){
+        if(answer_was_shown){
+            resultMessageId = R.string.answer_was_shown;
+        }
+        else if(userAnswer == correctAnswer){
             resultMessageId = R.string.corrent_answer;
         }
         else{
@@ -109,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 currentIndex = (currentIndex + 1)%questions.length;
+                answer_was_shown = false;
                 SetNextQuestion();
             }
         });
@@ -120,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, PromptActivityJ.class);
                 boolean correctAnswer = questions[currentIndex].GetAnswer();
                 intent.putExtra(Key_extra_answer, correctAnswer);
-                startActivity(intent);
+                startActivityForResult(intent, Request_Code_Prompt);
             }
         });
 
@@ -134,5 +141,15 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.d(Quiz_Tag, "Wywołana została metoda onSaveInstanceState");
         outState.putInt(Key_Current_Index, currentIndex);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode != RESULT_OK)return;
+        if(requestCode == Request_Code_Prompt){
+            if(data ==null) return;
+            answer_was_shown = data.getBooleanExtra(PromptActivityJ.KEY_EXTRA_ANSWER_SHOWN, false);
+        }
     }
 }
