@@ -13,7 +13,7 @@
         android:theme="@style/Theme.MyApplicationQuiz"
         tools:targetApi="31">
         <activity
-            android:name=".PromptActivity"
+            android:name=".PromptActivityJ"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

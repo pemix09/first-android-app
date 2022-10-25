@@ -23,12 +23,15 @@ public class PromptActivityJ extends AppCompatActivity {
         showCorrectAnswer = findViewById(R.id.hint_button);
         showCorrectAnswer.setOnClickListener(new View.OnClickListener(){
 
+
             @Override
             public void onClick(View v){
                 int answer = correctAnswer ? R.string.button_true : R.string.button_false;
                 answerTextView.setText(answer);
             }
         });
+
+        answerTextView = findViewById(R.id.Answer_text_view);
 
     }
 }
